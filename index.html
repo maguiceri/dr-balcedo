@@ -258,9 +258,9 @@
   .reveal{opacity:0;transform:translateY(26px);transition:opacity .8s ease,transform .8s ease}
   .reveal.in{opacity:1;transform:none}
 
-  /* foto del doctor: se revela deslizándose desde la izquierda */
-  .swipe-in{clip-path:inset(0 100% 0 0);transition:clip-path 1.15s cubic-bezier(.6,0,.16,1)}
-  .swipe-in.in{clip-path:inset(0 0 0 0)}
+  /* foto del doctor: se revela deslizándose desde la izquierda (sólo si hay JS) */
+  html.js .swipe-in{clip-path:inset(0 100% 0 0);transition:clip-path 1.15s cubic-bezier(.6,0,.16,1)}
+  html.js .swipe-in.in{clip-path:inset(0 0 0 0)}
 
   /* palabras que suben desde abajo a medida que se hace scroll */
   .fw{display:inline-block}
@@ -335,7 +335,7 @@
     .btn:hover,.info:hover{transform:none}
     .hero-inner>*,.hero-sig{animation:none!important;opacity:1}
     .trust-track{animation:none}
-    .swipe-in{clip-path:none;transition:none}
+    html.js .swipe-in,html.js .swipe-in.in{clip-path:none;transition:none}
     html.js .fw{opacity:1;transform:none}
   }
 </style>
