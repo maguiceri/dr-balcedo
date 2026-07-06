@@ -136,11 +136,11 @@
   .intro{display:none}
   html.js .intro{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;
     padding:24px;background:radial-gradient(120% 90% at 50% 30%,#EFE9DD 0%,var(--bg) 62%);
-    transition:opacity .9s ease}
+    transition:opacity .5s ease}
   html.js body.intro-open{overflow:hidden;height:100vh}
   .intro-mark{position:relative;font-family:var(--serif);font-weight:500;color:var(--pine);
     font-size:clamp(6rem,20vw,13rem);line-height:1;letter-spacing:.02em;
-    transition:transform 1.2s cubic-bezier(.6,0,.16,1),opacity .9s ease;will-change:transform,opacity}
+    transition:transform .8s cubic-bezier(.6,0,.16,1),opacity .55s ease;will-change:transform,opacity}
   .intro.leaving{opacity:0;pointer-events:none}
   .intro.leaving .intro-mark{transform:translate(21vw,-1vh) scale(.4);opacity:0}
   .intro.gone{display:none}
@@ -157,8 +157,8 @@
 
   /* entrada de las iniciales: "tracking-in" (las letras se juntan), como un solo bloque */
   html.js .intro-mark{opacity:0}
-  html.js .intro-mark.in{animation:introIn 1.2s cubic-bezier(.2,.75,.2,1) forwards}
-  @keyframes introIn{0%{opacity:0;letter-spacing:.55em}60%{opacity:1}100%{opacity:1;letter-spacing:.02em}}
+  html.js .intro-mark.in{animation:introIn .8s cubic-bezier(.2,.75,.2,1) forwards}
+  @keyframes introIn{0%{opacity:0;letter-spacing:.5em}55%{opacity:1}100%{opacity:1;letter-spacing:.02em}}
 
   /* palabras que suben en secuencia al entrar en pantalla */
   .word{display:inline-block;will-change:transform,opacity}
@@ -678,7 +678,7 @@
   if(intro && !reduceMotion){
     requestAnimationFrame(()=>{ const m=intro.querySelector('.intro-mark'); if(m) m.classList.add('in'); });
     setTimeout(()=>{ intro.classList.add('leaving'); enter();
-      setTimeout(()=>intro.classList.add('gone'),1250); }, 2400);
+      setTimeout(()=>intro.classList.add('gone'),850); }, 1250);
   }else{
     enter(); if(intro) intro.classList.add('gone');
   }
