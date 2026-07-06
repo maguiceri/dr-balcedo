@@ -141,11 +141,6 @@
   .intro-mark{position:relative;font-family:var(--serif);font-weight:500;color:var(--pine);
     font-size:clamp(6rem,20vw,13rem);line-height:1;letter-spacing:.02em;
     transition:transform 1.2s cubic-bezier(.6,0,.16,1),opacity .9s ease;will-change:transform,opacity}
-  html.js .intro-mark::before{content:"GB";position:absolute;inset:0;pointer-events:none;
-    background:linear-gradient(105deg,transparent 38%,rgba(255,255,255,.85) 50%,transparent 62%);
-    background-size:260% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;
-    background-position:220% 0}
-  html.js .intro-mark.in::before{animation:shine 1s ease-in-out 1.25s 1 forwards}
   .intro.leaving{opacity:0;pointer-events:none}
   .intro.leaving .intro-mark{transform:translate(21vw,-1vh) scale(.4);opacity:0}
   .intro.gone{display:none}
@@ -160,15 +155,10 @@
   @keyframes charIn{to{opacity:1;transform:none}}
   html.js .hero-inner>h1{opacity:1;animation:none}
 
-  /* entrada más expresiva de las iniciales en la intro */
-  html.js .intro-mark .char{opacity:0}
-  html.js .intro-mark.in .char{animation:introChar 1s cubic-bezier(.2,.8,.2,1) both;
-    animation-delay:calc(var(--i,0)*.2s)}
-  @keyframes introChar{
-    0%{opacity:0;transform:translateY(.42em) scale(.5) rotate(-7deg);filter:blur(9px)}
-    55%{opacity:1;filter:blur(0)}
-    100%{opacity:1;transform:none;filter:blur(0)}
-  }
+  /* entrada de las iniciales: "tracking-in" (las letras se juntan), como un solo bloque */
+  html.js .intro-mark{opacity:0}
+  html.js .intro-mark.in{animation:introIn 1.2s cubic-bezier(.2,.75,.2,1) forwards}
+  @keyframes introIn{0%{opacity:0;letter-spacing:.55em}60%{opacity:1}100%{opacity:1;letter-spacing:.02em}}
 
   /* palabras que suben en secuencia al entrar en pantalla */
   .word{display:inline-block;will-change:transform,opacity}
@@ -409,7 +399,7 @@
 
 <!-- ============ INTRO ============ -->
 <div class="intro" id="intro" aria-hidden="true">
-  <div class="intro-mark split-intro">GB</div>
+  <div class="intro-mark">GB</div>
 </div>
 
 <!-- ============ HEADER ============ -->
@@ -673,7 +663,7 @@
       });
     });
   }
-  document.querySelectorAll('.split-intro,.split-load,.split-scroll').forEach(splitChars);
+  document.querySelectorAll('.split-load,.split-scroll').forEach(splitChars);
   document.querySelectorAll('.split-words').forEach(splitWords);
 
   // intro: el nombre se escribe, luego se corre al costado y entra el hero
@@ -686,7 +676,7 @@
     document.querySelectorAll('.split-load').forEach(el=>el.classList.add('in'));
   }
   if(intro && !reduceMotion){
-    requestAnimationFrame(()=>intro.querySelectorAll('.split-intro').forEach(el=>el.classList.add('in')));
+    requestAnimationFrame(()=>{ const m=intro.querySelector('.intro-mark'); if(m) m.classList.add('in'); });
     setTimeout(()=>{ intro.classList.add('leaving'); enter();
       setTimeout(()=>intro.classList.add('gone'),1250); }, 2400);
   }else{
