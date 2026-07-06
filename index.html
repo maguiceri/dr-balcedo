@@ -145,12 +145,13 @@
     background:linear-gradient(105deg,transparent 38%,rgba(255,255,255,.85) 50%,transparent 62%);
     background-size:260% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;
     background-position:220% 0}
-  html.js .intro-mark.in::before{animation:shine 1.1s ease-in-out .5s 1 forwards}
+  html.js .intro-mark.in::before{animation:shine 1s ease-in-out 1.25s 1 forwards}
   .intro.leaving{opacity:0;pointer-events:none}
   .intro.leaving .intro-mark{transform:translate(21vw,-1vh) scale(.4);opacity:0}
   .intro.gone{display:none}
 
   /* ---------- efectos de letras (entrada + reveal por scroll) ---------- */
+  .cw{display:inline-block;white-space:nowrap}     /* palabra indivisible: no se parte entre líneas */
   .char{display:inline-block;will-change:transform,opacity}
   html.js .split-intro .char,html.js .split-load .char,html.js .split-scroll .char{
     opacity:0;transform:translateY(.62em) rotate(2.5deg)}
@@ -158,6 +159,16 @@
     animation:charIn .6s cubic-bezier(.2,.75,.25,1) both;animation-delay:calc(var(--i,0)*.03s)}
   @keyframes charIn{to{opacity:1;transform:none}}
   html.js .hero-inner>h1{opacity:1;animation:none}
+
+  /* entrada más expresiva de las iniciales en la intro */
+  html.js .intro-mark .char{opacity:0}
+  html.js .intro-mark.in .char{animation:introChar 1s cubic-bezier(.2,.8,.2,1) both;
+    animation-delay:calc(var(--i,0)*.2s)}
+  @keyframes introChar{
+    0%{opacity:0;transform:translateY(.42em) scale(.5) rotate(-7deg);filter:blur(9px)}
+    55%{opacity:1;filter:blur(0)}
+    100%{opacity:1;transform:none;filter:blur(0)}
+  }
 
   /* palabras que suben en secuencia al entrar en pantalla */
   .word{display:inline-block;will-change:transform,opacity}
@@ -634,15 +645,19 @@
   function splitChars(el){
     const nodes=[...el.childNodes]; el.textContent=''; let i=0;
     nodes.forEach(n=>{
-      if(n.nodeType===1){                        // preserva <br> y sub-elementos (ej: .sig)
-        el.appendChild(n.tagName==='BR'?document.createElement('br'):n); return;
-      }
-      for(const ch of (n.textContent||'')){
-        if(ch===' '){ el.appendChild(document.createTextNode(' ')); continue; }
-        const s=document.createElement('span');
-        s.className='char'; s.textContent=ch; s.style.setProperty('--i',i++);
-        el.appendChild(s);
-      }
+      if(n.nodeType===1){ el.appendChild(n.tagName==='BR'?document.createElement('br'):n); return; }
+      (n.textContent||'').split(/(\s+)/).forEach(tok=>{
+        if(tok==='') return;
+        if(/^\s+$/.test(tok)){ el.appendChild(document.createTextNode(tok)); return; }
+        // cada palabra en su propia caja para que no se parta entre líneas
+        const w=document.createElement('span'); w.className='cw';
+        for(const ch of tok){
+          const s=document.createElement('span');
+          s.className='char'; s.textContent=ch; s.style.setProperty('--i',i++);
+          w.appendChild(s);
+        }
+        el.appendChild(w);
+      });
     });
   }
   function splitWords(el){
@@ -673,7 +688,7 @@
   if(intro && !reduceMotion){
     requestAnimationFrame(()=>intro.querySelectorAll('.split-intro').forEach(el=>el.classList.add('in')));
     setTimeout(()=>{ intro.classList.add('leaving'); enter();
-      setTimeout(()=>intro.classList.add('gone'),1250); }, 1800);
+      setTimeout(()=>intro.classList.add('gone'),1250); }, 2400);
   }else{
     enter(); if(intro) intro.classList.add('gone');
   }
